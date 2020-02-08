@@ -12,6 +12,7 @@ $(function(){
     $("a").click(function(){
         var articleText = $.trim($(this).text());
         articleText = articleText.replace(/[wｗ]+/g,"ｗ");
+        articleText = articleText.replace(/\n/g,"");
         // articleText = articleText.replace(/…$/,"");
         // articleText = articleText.replace(/　?他$/,"");
         // articleText = articleText.replace(/　?←.*$/,"");
@@ -26,8 +27,10 @@ $(function(){
 function skipAntenna(preArticleText){
 
     // 枝刈り
-    if(!preArticleText) return 0;
-    if(preArticleText.length < minLinkLength) return 0;
+    if(!preArticleText || preArticleText.length < minLinkLength){
+        backgroundConsoleLog("-> cancel");
+        return 0;
+    }
     
     backgroundConsoleLog("search: "+preArticleText);
 
@@ -39,8 +42,10 @@ function skipAntenna(preArticleText){
         //skipUrl = skipUrl.replace(/.*http:\/\//,"http://");
 
         // 枝刈り
-        if(!skipArticleText) return 0;
-        if(skipArticleText.length < minLinkLength) return 0;
+        if(!skipArticleText || skipArticleText.length < minLinkLength){
+            //backgroundConsoleLog("-> ignore");
+            return 0;
+        }
 
         maxLength = Math.max(preArticleText.length, skipArticleText.length);
         nld = levenshteinDistance(preArticleText, skipArticleText) / maxLength;
