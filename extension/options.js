@@ -1,22 +1,55 @@
 $(function(){
-    shortcutkeyOld = localStorage['shortcutkey'];
-    console.log(shortcutkeyOld);
+    display();
 
-    if(shortcutkeyOld){
-        $('#shortcutkey').val(shortcutkeyOld);
+    $('#autojumpFlag').click(function(){
+        var autojumpFlag = $('#autojumpFlag').prop('checked');
+        localStorage.setItem('autojumpFlag', JSON.stringify(autojumpFlag));
+    });
+    
+    $('#options').submit(function(){
+        // テキストから配列
+        // URL成形まで
+        var antennaSiteUrlsText = $('#antennaSiteUrls').val();
+        antennaSiteUrlsText = antennaSiteUrlsText.replace(/\r\n/g, '\n');
+        antennaSiteUrlsText = antennaSiteUrlsText.replace(/\r/g, '\n');
+        antennaSiteUrlsText = antennaSiteUrlsText.replace(/\n+/g, '\n');
+        var antennaSiteUrls = antennaSiteUrlsText.split('\n');
+
+        for(var i in antennaSiteUrls){
+            antennaSiteUrls[i] = antennaSiteUrls[i].replace(/^https?:\/\//, '');
+            if(!antennaSiteUrls[i].match(/%/)){
+                antennaSiteUrls[i] = encodeURI(antennaSiteUrls[i]);
+            }
+            if(antennaSiteUrls[i].length < 10){
+                antennaSiteUrls[i] = '';
+            }
+        }
+        antennaSiteUrls = $.grep(antennaSiteUrls, function(e){return e !== "";});
+        antennaSiteUrls.sort();
+        
+        localStorage.setItem('antennaSiteUrls', JSON.stringify(antennaSiteUrls));
+        $('#msg').text("saved").show().fadeOut(1000);
+
+        display();
+    });
+
+    function display(antennaSiteUrl){
+        var autojumpFlag = JSON.parse(localStorage.getItem('autojumpFlag'));
+        var antennaSiteUrls = JSON.parse(localStorage.getItem('antennaSiteUrls'));
+
+        if(autojumpFlag){
+            $('#autojumpFlag').prop('checked', autojumpFlag);
+        }
+        
+        if(antennaSiteUrls){
+            console.log(antennaSiteUrls);
+            $('#antennaSiteUrls').val(antennaSiteUrls.join('\n'));
+        }
     }
 
-    $('#options').submit(function(){
-        shortcutkeyNew = $('#shortcutkey').val();
-        if(shortcutkeyNew.match(/^[0-9a-z]?$/)){
-            if(shortcutkeyNew){
-                localStorage['shortcutkey'] = shortcutkeyNew;
-            } else{
-                localStorage.removeItem('shortcutkey');
-            }
-            $('#msg').text("saved").show().fadeOut(1000);
-        } else{
-            $('#msg').text("error").show().fadeOut(1000);
-        }
+    $('#remove').click(function(){
+        localStorage.removeItem('autojumpFlag');
+        localStorage.removeItem('antennaSiteUrls');
     });
+    
 });

@@ -6,14 +6,20 @@
 <script src="./options.js"></script>
 </head>
 <body>
-<p>
-<strong>ショートカットキーの設定</strong><br>
-0-9またはa-zの1文字を、ショートカットキーに設定することができます。<br>
-<form action="#" id="options">
-<input type="text" id="shortcutkey" maxlength="1" size="5">
-<input type="submit" value="save">
-</form>
-</p>
-<p id="msg"></p>
+  <h1>オプション</h1>
+  <hr>
+  <h2>オートジャンプ</h2>
+  <p>
+    アンテナサイトのアドレスを登録しておくと、登録されたアンテナサイトはアイコンをクリックしなくても自動で記事へ飛びます。<br>
+    仕様上、無限にジャンプし続けるなどの誤作動が多くなります。<br>
+    その場合はアドレスを除外するか、この機能を有効にしないでください。<br>
+    <form action="#" id="options">
+      有効にする<input type="checkbox" id="autojumpFlag"><br>
+      <textarea type="textarea" id="antennaSiteUrls" rows="10" cols="100" placeholder='www.hoge.co.jp/&#13;&#10;hogehoge.jp/archives/&#13;&#10;のように入力'></textarea><br>
+      <input type="submit" value="save">
+      <input type="hidden" value="clear" id="remove">
+    </form>
+  </p>
+  <p id="msg"></p>
 </body>
 </html>

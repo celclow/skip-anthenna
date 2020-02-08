@@ -6,8 +6,22 @@ var minLinkLength = 10;
 
 $(function(){
     // ページを読み込んだらbackgroundに送る
-    port.postMessage({status: "loading"});
+    port.postMessage({status: 'loading'});
 
+    port.onMessage.addListener(function(msg) {
+        backgroundConsoleLog('auto');
+        if(msg.status === 'sendParams'){
+            var antennaSiteUrls = msg.antennaSiteUrls;
+            var tmpArticleText = msg.tmpArticleText;
+            for(i in antennaSiteUrls){
+                if(currentUrl.indexOf(antennaSiteUrls[i]) !== -1){
+                    skipAntenna(tmpArticleText);
+                }
+            }
+        }
+    });
+
+    
     // リンクを踏むときは、リンクテキストを取得しbackgroundに送る  
     $("a").click(function(){
         var articleText = $.trim($(this).text());
@@ -22,6 +36,7 @@ $(function(){
         backgroundConsoleLog("click link: "+articleText);
         port.postMessage({status: "clicked", articleText: articleText});
     });
+
 });
 
 function skipAntenna(preArticleText){
